@@ -244,7 +244,8 @@
   .check-btn.done { border-color: transparent; }
 
   /* Future days — dimmed, not clickable */
-  .check-btn.future { opacity: 0.2; cursor: not-allowed; pointer-events: none; }
+/* Changed pointer-events to 'auto' so you can actually click them */
+  .check-btn.future { opacity: 0.5; cursor: pointer; pointer-events: auto; }
 
   /* Today's column — subtle highlight ring */
   .check-btn.is-today-col {
@@ -840,17 +841,20 @@
           if (d < TOTAL) {
             const btn = document.createElement('button');
             const done = !!state[key(h.id, d)];
-            const isFuture = d > today;   // ← THE FIX: future = beyond today's real date
+            // Removed the isFuture lockout logic
             let cls = 'check-btn';
             if (done) cls += ' done';
-            if (isFuture) cls += ' future';
+            // We keep the 'future' class only for styling (dimmed look) if you want, 
+            // but we REMOVE the 'if (!isFuture)' check so it's always clickable.
+            if (d > today) cls += ' future'; 
             if (d === today) cls += ' is-today-col';
+
             btn.className = cls;
             btn.innerHTML = '<span class="tick">✓</span>';
             btn.setAttribute('aria-label', h.label + ' day ' + (d+1));
-            if (!isFuture) {
-              btn.addEventListener('click', (e) => toggle(h.id, d));
-            }
+
+            // Add the click listener to EVERY button regardless of the date
+            btn.addEventListener('click', (e) => toggle(h.id, d));
             cell.appendChild(btn);
           }
           row.appendChild(cell);
