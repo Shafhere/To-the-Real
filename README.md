@@ -1,2 +1,1 @@
-# To-the-Real-
-# PG-NEET-Tracker
+# A Small application for habbit tracking
